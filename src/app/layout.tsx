@@ -5,8 +5,12 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 
 export const metadata: Metadata = {
-  title: 'MentorPath',
+  title: {
+    default: 'MentorPath',
+    template: '%s | MentorPath',
+  },
   description: 'AI-powered alumni mentor discovery for graduate students',
+  keywords: ['mentorship', 'alumni', 'career', 'graduate students', 'networking'],
 };
 
 export default function RootLayout({
