@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { DEMO_STUDENT_ID } from '@/lib/constants';
 
 export async function GET(
   _request: Request,
@@ -18,7 +19,7 @@ export async function GET(
     const matchResult = await prisma.matchResult.findUnique({
       where: {
         studentId_alumniId: {
-          studentId: 'demo-student',
+          studentId: DEMO_STUDENT_ID,
           alumniId: params.id,
         },
       },

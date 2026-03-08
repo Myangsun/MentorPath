@@ -4,7 +4,7 @@ import { generateDetailedRationale } from '@/lib/openai';
 import type { StudentProfile, AlumniProfile, Prisma } from '@prisma/client';
 import type { ScoreBreakdown } from '@/types';
 
-const DEMO_STUDENT_ID = 'demo-student';
+import { DEMO_STUDENT_ID } from '@/lib/constants';
 
 export async function POST(request: Request) {
   try {

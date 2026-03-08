@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { studentProfileSchema } from '@/lib/validation';
 
-const DEMO_STUDENT_ID = 'demo-student';
+import { DEMO_STUDENT_ID } from '@/lib/constants';
 
 export async function GET() {
   try {

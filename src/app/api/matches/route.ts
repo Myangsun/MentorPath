@@ -9,7 +9,7 @@ import { calculateMatchScore } from '@/lib/matching';
 import { generateMatchRationale } from '@/lib/openai';
 import type { StudentProfile, AlumniProfile, Prisma } from '@prisma/client';
 
-const DEMO_STUDENT_ID = 'demo-student';
+import { DEMO_STUDENT_ID } from '@/lib/constants';
 
 export async function POST() {
   try {
