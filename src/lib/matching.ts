@@ -21,7 +21,7 @@ export function scoreCareerPivot(
 ): number {
   if (!alumni.pivotType) return 0;
 
-  const priorRoles = student.priorRoles as PriorRole[];
+  const priorRoles = student.priorRoles as unknown as PriorRole[];
   const studentOrigins = priorRoles.map((r) => normalize(r.title));
   const studentTargets = (student.roleInterests || []).map(normalize);
   const pivotParts = alumni.pivotType.split('→').map((p) => normalize(p.trim()));
