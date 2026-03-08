@@ -36,8 +36,8 @@ describe('studentProfileSchema', () => {
   it('validates a complete profile', () => {
     const result = studentProfileSchema.safeParse({
       name: 'Liang Chen',
-      school: 'MIT Sloan',
-      program: 'MBA',
+      school: 'MIT - Massachusetts Institute of Technology',
+      major: 'Computer Science',
       graduationYear: 2026,
       priorRoles: [
         { title: 'Data Analyst', company: 'TechCorp', industry: 'Technology', years: 4 },

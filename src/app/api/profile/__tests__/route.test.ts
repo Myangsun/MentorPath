@@ -19,8 +19,8 @@ const mockUpsert = prisma.studentProfile.upsert as jest.Mock;
 const sampleProfile = {
   id: 'demo-student',
   name: 'Liang Chen',
-  school: 'MIT Sloan',
-  program: 'MBA',
+  school: 'MIT - Massachusetts Institute of Technology',
+  major: 'Computer Science',
   graduationYear: 2026,
   priorRoles: [{ title: 'Analyst', company: 'Corp', industry: 'Tech', years: 3 }],
   visaStatus: 'F-1',
@@ -59,7 +59,7 @@ describe('POST /api/profile', () => {
     const req = new Request('http://localhost/api/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Liang Chen', school: 'MIT Sloan' }),
+      body: JSON.stringify({ name: 'Liang Chen', school: 'MIT - Massachusetts Institute of Technology' }),
     });
     const res = await POST(req);
     expect(res.status).toBe(200);

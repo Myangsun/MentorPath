@@ -15,8 +15,8 @@ function makeStudent(overrides: Partial<StudentProfile> = {}): StudentProfile {
   return {
     id: 'student-1',
     name: 'Liang Chen',
-    school: 'MIT Sloan',
-    program: 'MBA',
+    school: 'MIT - Massachusetts Institute of Technology',
+    major: 'Computer Science',
     graduationYear: 2026,
     priorRoles: [
       { title: 'Data Analyst', company: 'TechCorp', industry: 'Technology', years: 4 },
@@ -38,8 +38,8 @@ function makeAlumni(overrides: Partial<AlumniProfile> = {}): AlumniProfile {
     id: 'alumni-1',
     name: 'Sarah Chen',
     graduationYear: 2021,
-    school: 'MIT Sloan',
-    program: 'MBA',
+    school: 'MIT - Massachusetts Institute of Technology',
+    major: 'Computer Science',
     currentRole: 'Product Manager',
     currentCompany: 'ClimateTech Solutions',
     industry: 'Climate Tech',
@@ -106,41 +106,41 @@ describe('scoreCareerPivot', () => {
 });
 
 describe('scoreAcademicBackground', () => {
-  it('returns 20 for same school and program', () => {
-    const student = makeStudent({ school: 'MIT Sloan', program: 'MBA' });
-    const alumni = makeAlumni({ school: 'MIT Sloan', program: 'MBA' });
+  it('returns 20 for same school and major', () => {
+    const student = makeStudent({ school: 'MIT', major: 'Computer Science' });
+    const alumni = makeAlumni({ school: 'MIT', major: 'Computer Science' });
     expect(scoreAcademicBackground(student, alumni)).toBe(20);
   });
 
   it('returns 10 for same school only (no year bonus)', () => {
-    const student = makeStudent({ school: 'MIT Sloan', program: 'MBA', graduationYear: 2026 });
-    const alumni = makeAlumni({ school: 'MIT Sloan', program: 'MS', graduationYear: 2014 });
+    const student = makeStudent({ school: 'MIT', major: 'Computer Science', graduationYear: 2026 });
+    const alumni = makeAlumni({ school: 'MIT', major: 'Data Science', graduationYear: 2014 });
     expect(scoreAcademicBackground(student, alumni)).toBe(10);
   });
 
-  it('returns 10 for same program only (no year bonus)', () => {
-    const student = makeStudent({ school: 'MIT Sloan', program: 'MBA', graduationYear: 2026 });
-    const alumni = makeAlumni({ school: 'HBS', program: 'MBA', graduationYear: 2014 });
+  it('returns 10 for same major only (no year bonus)', () => {
+    const student = makeStudent({ school: 'MIT', major: 'Computer Science', graduationYear: 2026 });
+    const alumni = makeAlumni({ school: 'Harvard University', major: 'Computer Science', graduationYear: 2014 });
     expect(scoreAcademicBackground(student, alumni)).toBe(10);
   });
 
   it('returns 0 for no match (no year bonus)', () => {
-    const student = makeStudent({ school: 'MIT Sloan', program: 'MBA', graduationYear: 2026 });
-    const alumni = makeAlumni({ school: 'HBS', program: 'MS', graduationYear: 2014 });
+    const student = makeStudent({ school: 'MIT', major: 'Computer Science', graduationYear: 2026 });
+    const alumni = makeAlumni({ school: 'Harvard University', major: 'Data Science', graduationYear: 2014 });
     expect(scoreAcademicBackground(student, alumni)).toBe(0);
   });
 
   it('adds year overlap bonus when score < 20', () => {
-    const student = makeStudent({ school: 'MIT Sloan', program: 'MS', graduationYear: 2026 });
-    const alumni = makeAlumni({ school: 'HBS', program: 'MS', graduationYear: 2024 });
-    // Same program (10) + year overlap within 5 (5) = 15
+    const student = makeStudent({ school: 'MIT', major: 'Data Science', graduationYear: 2026 });
+    const alumni = makeAlumni({ school: 'Harvard University', major: 'Data Science', graduationYear: 2024 });
+    // Same major (10) + year overlap within 5 (5) = 15
     expect(scoreAcademicBackground(student, alumni)).toBe(15);
   });
 
   it('caps at 20', () => {
-    const student = makeStudent({ school: 'MIT Sloan', program: 'MBA', graduationYear: 2026 });
-    const alumni = makeAlumni({ school: 'MIT Sloan', program: 'MBA', graduationYear: 2025 });
-    // Same school (10) + same program (10) = 20, year bonus doesn't add
+    const student = makeStudent({ school: 'MIT', major: 'Computer Science', graduationYear: 2026 });
+    const alumni = makeAlumni({ school: 'MIT', major: 'Computer Science', graduationYear: 2025 });
+    // Same school (10) + same major (10) = 20, year bonus doesn't add
     expect(scoreAcademicBackground(student, alumni)).toBe(20);
   });
 });
@@ -280,7 +280,7 @@ describe('calculateMatchScore', () => {
     const student = makeStudent();
     const alumni = makeAlumni();
     const { score } = calculateMatchScore(student, alumni);
-    // Sarah: same school+program (20), same pivot (30), F-1 match (20),
+    // Sarah: same school+major (20), same pivot (30), F-1 match (20),
     // Climate Tech match (15), geo overlap (10), stage ~3 diff (3) = ~98
     expect(score).toBeGreaterThanOrEqual(80);
   });
@@ -288,8 +288,8 @@ describe('calculateMatchScore', () => {
   it('produces low score for poor match', () => {
     const student = makeStudent();
     const alumni = makeAlumni({
-      school: 'Wharton',
-      program: 'PhD',
+      school: 'University of Pennsylvania',
+      major: 'Biomedical Engineering',
       pivotType: 'nurse → healthcare strategy',
       visaHistory: ['citizen'],
       industry: 'Healthcare',

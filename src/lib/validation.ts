@@ -10,7 +10,7 @@ export const priorRoleSchema = z.object({
 export const studentProfileSchema = z.object({
   name: z.string().min(1).optional(),
   school: z.string().min(1).optional(),
-  program: z.string().min(1).optional(),
+  major: z.string().min(1).optional(),
   graduationYear: z.number().int().min(2000).max(2030).optional(),
   priorRoles: z.array(priorRoleSchema).optional(),
   visaStatus: z.string().nullable().optional(),

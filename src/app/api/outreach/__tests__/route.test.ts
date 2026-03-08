@@ -62,7 +62,7 @@ describe('POST /api/outreach', () => {
   });
 
   it('generates outreach message successfully', async () => {
-    const student = { id: 'demo-student', name: 'Demo', program: 'MBA', school: 'MIT Sloan' };
+    const student = { id: 'demo-student', name: 'Demo', major: 'Computer Science', school: 'MIT - Massachusetts Institute of Technology' };
     const alumni = { id: 'a1', name: 'Alice' };
     const matchResult = { rationale: 'Great match because...' };
     const outreach = {

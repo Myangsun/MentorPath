@@ -42,7 +42,7 @@ export type OpennessLevel =
 export interface StudentProfileInput {
   name: string;
   school: string;
-  program: string;
+  major: string;
   graduationYear: number;
   priorRoles: PriorRole[];
   visaStatus?: string | null;
@@ -58,7 +58,7 @@ export interface AlumniProfileData {
   name: string;
   graduationYear: number;
   school: string;
-  program: string;
+  major: string;
   currentRole: string;
   currentCompany: string;
   industry: string;

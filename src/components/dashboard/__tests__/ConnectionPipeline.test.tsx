@@ -12,7 +12,7 @@ jest.mock('next/link', () => {
 const baseAlumni = {
   graduationYear: 2020,
   school: 'MIT',
-  program: 'MBA',
+  major: 'Computer Science',
   industry: 'Tech',
   careerTimeline: [],
   pivotType: null,

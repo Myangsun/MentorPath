@@ -39,7 +39,7 @@ export async function POST(request: Request) {
         id: DEMO_STUDENT_ID,
         name: parsed.data.name || '',
         school: parsed.data.school || '',
-        program: parsed.data.program || '',
+        major: parsed.data.major || '',
         graduationYear: parsed.data.graduationYear || 2026,
         priorRoles: parsed.data.priorRoles || [],
         visaStatus: parsed.data.visaStatus ?? null,

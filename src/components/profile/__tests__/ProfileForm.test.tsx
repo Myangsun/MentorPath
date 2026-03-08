@@ -6,8 +6,8 @@ const mockSave = jest.fn().mockResolvedValue(undefined);
 
 const sampleData = {
   name: 'Liang Chen',
-  school: 'MIT Sloan',
-  program: 'MBA',
+  school: 'MIT - Massachusetts Institute of Technology',
+  major: 'Computer Science',
   graduationYear: 2026,
   priorRoles: [{ title: 'Analyst', company: 'Corp', industry: 'Tech', years: 3 }],
   visaStatus: 'F-1',
@@ -88,7 +88,7 @@ describe('ProfileForm', () => {
 
     const savedData = mockSave.mock.calls[0][0];
     expect(savedData.name).toBe('Liang Chen');
-    expect(savedData.school).toBe('MIT Sloan');
+    expect(savedData.school).toBe('MIT - Massachusetts Institute of Technology');
   });
 
   it('shows success message after save', async () => {

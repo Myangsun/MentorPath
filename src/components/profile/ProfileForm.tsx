@@ -16,8 +16,25 @@ interface ProfileFormProps {
   onSave: (data: StudentProfileFormData) => Promise<void>;
 }
 
-const SCHOOLS = ['MIT Sloan', 'HBS', 'Stanford GSB', 'Wharton', 'Kellogg', 'Columbia Business School'];
-const PROGRAMS = ['MBA', 'MS', 'PhD'];
+const SCHOOLS = [
+  'MIT - Massachusetts Institute of Technology',
+  'Harvard University',
+  'New York University',
+  'Stanford University',
+  'University of Pennsylvania',
+];
+const MAJORS = [
+  'Computer Science',
+  'Business Administration',
+  'Electrical Engineering',
+  'Data Science',
+  'Mechanical Engineering',
+  'Economics',
+  'Applied Mathematics',
+  'Biomedical Engineering',
+  'Information Systems',
+  'Operations Research',
+];
 const VISA_OPTIONS = ['F-1', 'H-1B', 'OPT', 'Green Card', 'Citizen', 'Other'];
 const INDUSTRY_OPTIONS = ['Technology', 'Consulting', 'Finance', 'Climate Tech', 'Healthcare', 'Nonprofit', 'Social Impact'];
 const ROLE_OPTIONS = ['Product Manager', 'Strategy', 'Data Science', 'Engineering', 'Consulting', 'Marketing', 'Operations', 'Finance', 'Venture Capital'];
@@ -26,7 +43,7 @@ function calculateCompletion(data: StudentProfileFormData): number {
   const fields = [
     !!data.name,
     !!data.school,
-    !!data.program,
+    !!data.major,
     !!data.graduationYear,
     (data.priorRoles?.length ?? 0) > 0,
     !!data.visaStatus,
@@ -42,7 +59,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
   const [formData, setFormData] = useState<StudentProfileFormData>({
     name: initialData?.name || '',
     school: initialData?.school || '',
-    program: initialData?.program || '',
+    major: initialData?.major || '',
     graduationYear: initialData?.graduationYear || 2026,
     priorRoles: initialData?.priorRoles || [],
     visaStatus: initialData?.visaStatus || null,
@@ -159,16 +176,16 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
               </select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="program">Program</Label>
+              <Label htmlFor="major">Major</Label>
               <select
-                id="program"
+                id="major"
                 className="flex h-10 w-full rounded-md border border-neutral-400 bg-white px-3 py-2 text-sm"
-                value={formData.program || ''}
-                onChange={(e) => updateField('program', e.target.value)}
+                value={formData.major || ''}
+                onChange={(e) => updateField('major', e.target.value)}
               >
-                <option value="">Select program</option>
-                {PROGRAMS.map((p) => (
-                  <option key={p} value={p}>{p}</option>
+                <option value="">Select major</option>
+                {MAJORS.map((m) => (
+                  <option key={m} value={m}>{m}</option>
                 ))}
               </select>
             </div>

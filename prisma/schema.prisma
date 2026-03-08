@@ -12,7 +12,7 @@ model StudentProfile {
   id                String       @id @default(cuid())
   name              String
   school            String
-  program           String
+  major             String
   graduationYear    Int
   priorRoles        Json         // [{ title, company, industry, years }]
   visaStatus        String?
@@ -33,7 +33,7 @@ model AlumniProfile {
   name              String
   graduationYear    Int
   school            String
-  program           String
+  major             String
   currentRole       String
   currentCompany    String
   industry          String

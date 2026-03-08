@@ -76,7 +76,7 @@ export function scoreAcademicBackground(
     score += 10;
   }
 
-  if (normalize(student.program) === normalize(alumni.program)) {
+  if (normalize(student.major) === normalize(alumni.major)) {
     score += 10;
   }
 

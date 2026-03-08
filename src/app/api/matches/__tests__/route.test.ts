@@ -24,8 +24,8 @@ const mockUpsert = prisma.matchResult.upsert as jest.Mock;
 const mockStudent = {
   id: 'demo-student',
   name: 'Test',
-  school: 'MIT Sloan',
-  program: 'MBA',
+  school: 'MIT - Massachusetts Institute of Technology',
+  major: 'Computer Science',
   graduationYear: 2026,
   priorRoles: [{ title: 'Analyst', company: 'Corp', industry: 'Tech', years: 2 }],
   visaStatus: 'F-1',
@@ -39,8 +39,8 @@ const mockStudent = {
 const mockAlumni = {
   id: 'alumni-1',
   name: 'Sarah Chen',
-  school: 'MIT Sloan',
-  program: 'MBA',
+  school: 'MIT - Massachusetts Institute of Technology',
+  major: 'Computer Science',
   graduationYear: 2021,
   currentRole: 'PM',
   currentCompany: 'ClimateTech',

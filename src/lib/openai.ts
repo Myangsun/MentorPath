@@ -18,7 +18,7 @@ function extractStudentContext(student: StudentProfile) {
   return {
     name: student.name,
     school: student.school,
-    program: student.program,
+    major: student.major,
     priorRoles: student.priorRoles,
     visaStatus: student.visaStatus,
     industries: student.industries,
@@ -31,7 +31,7 @@ function extractAlumniContext(alumni: AlumniProfile, detailed = false) {
   const base = {
     name: alumni.name,
     school: alumni.school,
-    program: alumni.program,
+    major: alumni.major,
     currentRole: alumni.currentRole,
     currentCompany: alumni.currentCompany,
     industry: alumni.industry,
@@ -152,7 +152,7 @@ export async function generateOutreachMessage(
 ): Promise<OutreachResponse> {
   if (isMockMode()) {
     return {
-      message: `Hi ${alumni.name},\n\nI'm ${student.name}, a ${student.program} student at ${student.school}. I came across your profile and was impressed by your career journey. I'd love to connect and learn from your experience.\n\nWould you be open to a brief conversation?\n\nBest regards,\n${student.name}`,
+      message: `Hi ${alumni.name},\n\nI'm ${student.name}, a ${student.major} student at ${student.school}. I came across your profile and was impressed by your career journey. I'd love to connect and learn from your experience.\n\nWould you be open to a brief conversation?\n\nBest regards,\n${student.name}`,
       toneGuidance: [
         'Keep it concise and respectful of their time',
         'Mention specific shared experiences',
@@ -189,7 +189,7 @@ export async function generateOutreachMessage(
     return JSON.parse(content) as OutreachResponse;
   } catch {
     return {
-      message: `Hi ${alumni.name},\n\nI'm ${student.name}, a ${student.program} student at ${student.school}. I'd love to connect and learn from your experience.\n\nBest regards,\n${student.name}`,
+      message: `Hi ${alumni.name},\n\nI'm ${student.name}, a ${student.major} student at ${student.school}. I'd love to connect and learn from your experience.\n\nBest regards,\n${student.name}`,
       toneGuidance: ['Keep it concise', 'Be specific about your ask', 'Mention shared background'],
     };
   }
