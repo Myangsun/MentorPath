@@ -75,11 +75,11 @@ export interface AlumniProfileData {
 }
 
 export interface MatchResultWithAlumni {
-  id: string;
+  id?: string;
   alumniId: string;
   score: number;
-  scoreBreakdown: ScoreBreakdown;
-  rationale: string | null;
+  breakdown: ScoreBreakdown;
+  rationale: string;
   alumni: AlumniProfileData;
 }
 
@@ -109,10 +109,9 @@ export interface ConnectionData {
 // ── Filter State ──
 export interface MatchFilters {
   industries: string[];
-  openness: OpennessLevel[];
+  openness: string[];
   minScore: number;
-  sharedVisa: boolean;
-  pivotTypes: string[];
+  visaMatch: boolean;
 }
 
-export type SortOption = 'score_desc' | 'score_asc' | 'recent';
+export type SortOption = 'score_desc' | 'score_asc' | 'name_asc' | 'name_desc';
