@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model StudentProfile {
+  id                String       @id @default(cuid())
+  name              String
+  school            String
+  program           String
+  graduationYear    Int
+  priorRoles        Json         // [{ title, company, industry, years }]
+  visaStatus        String?
+  industries        String[]
+  roleInterests     String[]
+  pivotDirection    String?
+  geographicPrefs   String[]
+  mentorPreferences String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  connections       Connection[]
+  matchResults      MatchResult[]
+}
+
+model AlumniProfile {
+  id                String       @id @default(cuid())
+  name              String
+  graduationYear    Int
+  school            String
+  program           String
+  currentRole       String
+  currentCompany    String
+  industry          String
+  careerTimeline    Json         // [{ title, company, startYear, endYear }]
+  pivotType         String?
+  skills            String[]
+  visaHistory       String[]
+  geographicHistory String[]
+  openness          String       // "one_time_chat" | "short_term_advising" | "ongoing_mentorship"
+  topicsWilling     String[]
+  responseRate      Float        @default(0.8)
+  lastActive        DateTime     @default(now())
+  bio               String?
+  createdAt         DateTime     @default(now())
+
+  connections       Connection[]
+  matchResults      MatchResult[]
+}
+
+model MatchResult {
+  id              String         @id @default(cuid())
+  studentId       String
+  alumniId        String
+  score           Float
+  scoreBreakdown  Json
+  rationale       String?
+  detailedRationale Json?
+  createdAt       DateTime       @default(now())
+
+  student         StudentProfile @relation(fields: [studentId], references: [id])
+  alumni          AlumniProfile  @relation(fields: [alumniId], references: [id])
+
+  @@unique([studentId, alumniId])
+}
+
+model Connection {
+  id              String         @id @default(cuid())
+  studentId       String
+  alumniId        String
+  status          String         @default("saved")
+  outreachMessage String?
+  notes           String?
+  lastActivityAt  DateTime       @default(now())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  student         StudentProfile @relation(fields: [studentId], references: [id])
+  alumni          AlumniProfile  @relation(fields: [alumniId], references: [id])
+
+  @@unique([studentId, alumniId])
+}
