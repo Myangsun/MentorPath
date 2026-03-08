@@ -21,32 +21,41 @@ Copy the example env file and fill in your credentials:
 cp .env.local.example .env.local
 ```
 
-Edit `.env.local` with your values:
+### Getting your Supabase connection strings
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | Supabase connection string (pooled) |
-| `DIRECT_URL` | Supabase direct connection string |
-| `OPENAI_API_KEY` | Your OpenAI API key |
-| `NEXT_PUBLIC_APP_URL` | App URL (default: `http://localhost:3000`) |
+1. Go to [supabase.com/dashboard](https://supabase.com/dashboard) and open your project
+2. Click **Connect** (green button, top right)
+3. Select **ORMs** → **Prisma**
+4. Copy both `DATABASE_URL` and `DIRECT_URL` — paste them into `.env.local`
 
-**Mock mode:** Set `OPENAI_MOCK=true` to run without an OpenAI key. The app will return deterministic placeholder responses instead of calling the API.
+### Environment variables
+
+| Variable | Description | Required |
+|---|---|---|
+| `DATABASE_URL` | Supabase pooled connection (port `6543`, with `?pgbouncer=true`) | Yes |
+| `DIRECT_URL` | Supabase direct connection (port `5432`) | Yes |
+| `OPENAI_API_KEY` | Your OpenAI API key | Yes* |
+| `OPENAI_MOCK` | Set to `true` to skip OpenAI calls (uses mock responses) | No |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | No |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key | No |
+| `NEXT_PUBLIC_APP_URL` | App URL (default: `http://localhost:3000`) | No |
+
+*Not required if `OPENAI_MOCK=true`.
 
 ## 3. Database Setup
 
-Generate the Prisma client and push the schema to your database:
+Push the Prisma schema to your Supabase database:
 
 ```bash
-npx prisma generate
-npx prisma db push
+npx dotenv -e .env.local -- npx prisma db push
 ```
 
 ## 4. Seed the Database
 
-The seed script populates the database with sample data:
+Populate with sample data:
 
 ```bash
-npx prisma db seed
+npx dotenv -e .env.local -- npx prisma db seed
 ```
 
 This creates:
@@ -87,9 +96,24 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## 6. Run Tests
 
+### Unit & component tests
+
 ```bash
 npm test
 ```
+
+### E2E tests (Playwright)
+
+```bash
+npm run test:e2e
+```
+
+E2E tests run against a local dev server with `OPENAI_MOCK=true`. They cover:
+- Profile setup and persistence
+- Match generation and filtering
+- Mentor detail pages with rationale
+- Outreach message composition
+- Dashboard connection pipeline
 
 ## Key Features
 

@@ -1,4 +1,8 @@
+import { config } from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+
+// Load .env.local so ts-node can find DATABASE_URL
+config({ path: '.env.local' });
 
 const prisma = new PrismaClient();
 

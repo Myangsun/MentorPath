@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Profile Setup', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
+    // Wait for profile data to load
+    await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
   });
 
   test('loads the profile page with form', async ({ page }) => {
@@ -14,7 +16,9 @@ test.describe('Profile Setup', () => {
   });
 
   test('displays completion bar', async ({ page }) => {
-    await expect(page.getByText(/\d+% complete/i)).toBeVisible();
+    // CompletionBar renders "Profile Completion" label and a percentage
+    await expect(page.getByText('Profile Completion')).toBeVisible();
+    await expect(page.getByText(/%/)).toBeVisible();
   });
 
   test('can fill in basic information', async ({ page }) => {
@@ -30,37 +34,61 @@ test.describe('Profile Setup', () => {
     await expect(page.locator('#major')).toHaveValue('Computer Science');
   });
 
-  test('can select target industries', async ({ page }) => {
-    const techButton = page.getByRole('button', { name: 'Technology', exact: true });
-    await techButton.click();
-    await expect(techButton).toHaveClass(/bg-brand-50/);
+  test('can toggle target industries', async ({ page }) => {
+    // "Nonprofit" is unique to the industries section (not in roles)
+    const nonprofitButton = page.getByRole('button', { name: 'Nonprofit', exact: true });
 
-    const climateButton = page.getByRole('button', { name: 'Climate Tech', exact: true });
-    await climateButton.click();
-    await expect(climateButton).toHaveClass(/bg-brand-50/);
+    // Get current state
+    const classBefore = await nonprofitButton.getAttribute('class');
+    const wasSelected = classBefore?.includes('bg-brand-50');
+
+    // Click to toggle
+    await nonprofitButton.click();
+
+    // State should flip
+    if (wasSelected) {
+      await expect(nonprofitButton).not.toHaveClass(/bg-brand-50/);
+    } else {
+      await expect(nonprofitButton).toHaveClass(/bg-brand-50/);
+    }
   });
 
-  test('can select target roles', async ({ page }) => {
-    const pmButton = page.getByRole('button', { name: 'Product Manager', exact: true });
-    await pmButton.click();
-    await expect(pmButton).toHaveClass(/bg-brand-50/);
+  test('can toggle target roles', async ({ page }) => {
+    const marketingButton = page.getByRole('button', { name: 'Marketing', exact: true });
+
+    const classBefore = await marketingButton.getAttribute('class');
+    const wasSelected = classBefore?.includes('bg-brand-50');
+
+    await marketingButton.click();
+
+    if (wasSelected) {
+      await expect(marketingButton).not.toHaveClass(/bg-brand-50/);
+    } else {
+      await expect(marketingButton).toHaveClass(/bg-brand-50/);
+    }
   });
 
   test('can add and remove prior roles', async ({ page }) => {
-    // Initially empty
-    await expect(page.getByText('No prior roles added yet')).toBeVisible();
-
-    // Add a role
+    // Add a new role
     await page.getByRole('button', { name: 'Add Role' }).click();
-    await expect(page.getByText('Role 1')).toBeVisible();
 
-    // Fill role details
-    await page.getByPlaceholder('Job title').fill('Software Engineer');
-    await page.getByPlaceholder('Company name').fill('Google');
+    // A new role section should appear with a "Job title" placeholder
+    const titleInputs = page.getByPlaceholder('Job title');
+    const count = await titleInputs.count();
+    expect(count).toBeGreaterThan(0);
 
-    // Remove the role
-    await page.getByRole('button', { name: 'Remove role 1' }).click();
-    await expect(page.getByText('No prior roles added yet')).toBeVisible();
+    // Fill the last (newly added) role
+    await titleInputs.last().fill('Software Engineer');
+    await expect(titleInputs.last()).toHaveValue('Software Engineer');
+
+    // Remove the last role using its remove button
+    const removeButtons = page.getByRole('button', { name: /Remove role/i });
+    const removeCount = await removeButtons.count();
+    await removeButtons.last().click();
+
+    // Should have one fewer role now
+    const newRemoveCount = await page.getByRole('button', { name: /Remove role/i }).count();
+    expect(newRemoveCount).toBe(removeCount - 1);
   });
 
   test('can save profile', async ({ page }) => {

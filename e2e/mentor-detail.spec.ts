@@ -36,10 +36,10 @@ test.describe('Mentor Detail', () => {
     // Match Breakdown section should be visible
     await expect(page.getByText('Match Breakdown')).toBeVisible();
 
-    // Score categories should be present
-    await expect(page.getByText('Career Pivot')).toBeVisible();
-    await expect(page.getByText('Academic')).toBeVisible();
-    await expect(page.getByText('Industry')).toBeVisible();
+    // Score categories should be present (use exact span match to avoid badge conflicts)
+    await expect(page.locator('span', { hasText: 'Career Pivot' }).first()).toBeVisible();
+    await expect(page.locator('span', { hasText: 'Academic' })).toBeVisible();
+    await expect(page.locator('span', { hasText: 'Industry' })).toBeVisible();
   });
 
   test('shows Compose Outreach button', async ({ page }) => {

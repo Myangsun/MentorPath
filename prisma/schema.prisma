@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  envFilePath = "../.env.local"
 }
 
 datasource db {
