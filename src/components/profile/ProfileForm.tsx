@@ -165,7 +165,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
               <Label htmlFor="school">School</Label>
               <select
                 id="school"
-                className="flex h-10 w-full rounded-md border border-neutral-400 bg-white px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200"
                 value={formData.school || ''}
                 onChange={(e) => updateField('school', e.target.value)}
               >
@@ -179,7 +179,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
               <Label htmlFor="major">Major</Label>
               <select
                 id="major"
-                className="flex h-10 w-full rounded-md border border-neutral-400 bg-white px-3 py-2 text-sm"
+                className="flex h-10 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200"
                 value={formData.major || ''}
                 onChange={(e) => updateField('major', e.target.value)}
               >
@@ -290,8 +290,8 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                   onClick={() => toggleArrayItem('industries', ind)}
                   className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                     formData.industries?.includes(ind)
-                      ? 'border-brand-600 bg-brand-50 text-brand-600'
-                      : 'border-border text-neutral-600 hover:border-neutral-400'
+                      ? 'border-brand-500 bg-brand-50 text-brand-700 font-medium'
+                      : 'border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:bg-cream-50'
                   }`}
                 >
                   {ind}
@@ -310,8 +310,8 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                   onClick={() => toggleArrayItem('roleInterests', role)}
                   className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                     formData.roleInterests?.includes(role)
-                      ? 'border-brand-600 bg-brand-50 text-brand-600'
-                      : 'border-border text-neutral-600 hover:border-neutral-400'
+                      ? 'border-brand-500 bg-brand-50 text-brand-700 font-medium'
+                      : 'border-neutral-200 text-neutral-600 hover:border-neutral-400 hover:bg-cream-50'
                   }`}
                 >
                   {role}
@@ -364,7 +364,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
 
       {/* Submit */}
       <div className="flex items-center gap-4">
-        <Button type="submit" disabled={saving} className="bg-brand-600 hover:bg-brand-700">
+        <Button type="submit" disabled={saving} variant="brand">
           {saving ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...

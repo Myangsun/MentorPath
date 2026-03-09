@@ -97,7 +97,7 @@ export default function MentorDetailPage() {
           <Card>
             <CardContent className="space-y-3 p-4">
               <Link href={`/outreach/${mentorId}`}>
-                <Button className="w-full bg-brand-600 hover:bg-brand-700">
+                <Button className="w-full" variant="brand">
                   <Send className="mr-2 h-4 w-4" /> Compose Outreach
                 </Button>
               </Link>

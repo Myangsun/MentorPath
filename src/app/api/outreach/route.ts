@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { generateOutreachMessage } from '@/lib/openai';
+import { getStudentId } from '@/lib/auth';
 import type { StudentProfile, AlumniProfile } from '@prisma/client';
-
-const DEMO_STUDENT_ID = 'demo-student';
 
 export async function POST(request: Request) {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const { alumniId, purpose } = await request.json();
 
     if (!alumniId || !purpose) {
@@ -17,12 +21,10 @@ export async function POST(request: Request) {
     }
 
     const [student, alumni, matchResult] = await Promise.all([
-      prisma.studentProfile.findUnique({ where: { id: DEMO_STUDENT_ID } }),
+      prisma.studentProfile.findUnique({ where: { id: studentId } }),
       prisma.alumniProfile.findUnique({ where: { id: alumniId } }),
       prisma.matchResult.findUnique({
-        where: {
-          studentId_alumniId: { studentId: DEMO_STUDENT_ID, alumniId },
-        },
+        where: { studentId_alumniId: { studentId, alumniId } },
       }),
     ]);
 

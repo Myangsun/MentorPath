@@ -1,19 +1,18 @@
 import Link from 'next/link';
-import { PageContainer } from '@/components/layout/PageContainer';
 
 export default function NotFound() {
   return (
-    <PageContainer>
-      <div className="py-20 text-center">
-        <h1 className="text-4xl font-bold text-neutral-900">404</h1>
-        <p className="mt-2 text-lg text-neutral-600">Page not found</p>
+    <div className="flex min-h-screen items-center justify-center bg-cream-100 px-6">
+      <div className="text-center">
+        <h1 className="heading-display text-6xl text-neutral-900">404</h1>
+        <p className="mt-3 text-lg text-neutral-500">Page not found</p>
         <Link
-          href="/profile"
-          className="mt-4 inline-block text-brand-600 hover:underline"
+          href="/"
+          className="mt-6 inline-block rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-800"
         >
-          Go to your profile
+          Go home
         </Link>
       </div>
-    </PageContainer>
+    </div>
   );
 }

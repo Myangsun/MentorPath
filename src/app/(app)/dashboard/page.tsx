@@ -27,9 +27,9 @@ export default function DashboardPage() {
 
   return (
     <PageContainer>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-900">Connection Dashboard</h1>
-        <p className="mt-1 text-neutral-600">
+      <div className="mb-8">
+        <h1 className="heading-display text-3xl text-neutral-900">Connection Dashboard</h1>
+        <p className="mt-2 text-neutral-500">
           Track and manage your mentor connections
         </p>
       </div>

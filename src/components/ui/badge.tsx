@@ -4,17 +4,16 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border border-oklch(0.922 0 0) px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-oklch(0.708 0 0) focus:ring-offset-2 dark:border-oklch(1 0 0 / 10%) dark:focus:ring-oklch(0.556 0 0)",
+  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors",
   {
     variants: {
       variant: {
-        default:
-          "border-transparent bg-oklch(0.205 0 0) text-oklch(0.985 0 0) hover:bg-oklch(0.205 0 0)/80 dark:bg-oklch(0.87 0.00 0) dark:text-oklch(0.205 0 0) dark:hover:bg-oklch(0.87 0.00 0)/80",
-        secondary:
-          "border-transparent bg-oklch(0.97 0 0) text-oklch(0.205 0 0) hover:bg-oklch(0.97 0 0)/80 dark:bg-oklch(0.269 0 0) dark:text-oklch(0.985 0 0) dark:hover:bg-oklch(0.269 0 0)/80",
-        destructive:
-          "border-transparent bg-oklch(0.58 0.22 27) text-destructive-foreground hover:bg-oklch(0.58 0.22 27)/80 dark:bg-oklch(0.704 0.191 22.216) dark:hover:bg-oklch(0.704 0.191 22.216)/80",
-        outline: "text-oklch(0.145 0 0) dark:text-oklch(0.985 0 0)",
+        default: "border-transparent bg-neutral-900 text-white",
+        secondary: "border-transparent bg-cream-200 text-neutral-700",
+        destructive: "border-transparent bg-red-50 text-danger",
+        outline: "border-border text-neutral-600",
+        success: "border-transparent bg-brand-50 text-brand-700",
+        warning: "border-transparent bg-amber-50 text-amber-700",
       },
     },
     defaultVariants: {

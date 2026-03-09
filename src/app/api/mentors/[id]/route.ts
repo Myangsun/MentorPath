@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { DEMO_STUDENT_ID } from '@/lib/constants';
+import { getStudentId } from '@/lib/auth';
 
 export async function GET(
   _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    const studentId = await getStudentId();
+
     const alumni = await prisma.alumniProfile.findUnique({
       where: { id: params.id },
     });
@@ -15,15 +17,14 @@ export async function GET(
       return NextResponse.json({ error: 'Mentor not found' }, { status: 404 });
     }
 
-    // Also fetch match result if exists
-    const matchResult = await prisma.matchResult.findUnique({
-      where: {
-        studentId_alumniId: {
-          studentId: DEMO_STUDENT_ID,
-          alumniId: params.id,
+    let matchResult = null;
+    if (studentId) {
+      matchResult = await prisma.matchResult.findUnique({
+        where: {
+          studentId_alumniId: { studentId, alumniId: params.id },
         },
-      },
-    });
+      });
+    }
 
     return NextResponse.json({
       ...alumni,

@@ -1,13 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { generateDetailedRationale } from '@/lib/openai';
+import { getStudentId } from '@/lib/auth';
 import type { StudentProfile, AlumniProfile, Prisma } from '@prisma/client';
 import type { ScoreBreakdown } from '@/types';
 
-import { DEMO_STUDENT_ID } from '@/lib/constants';
-
 export async function POST(request: Request) {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const { alumniId } = await request.json();
 
     if (!alumniId) {
@@ -15,12 +19,10 @@ export async function POST(request: Request) {
     }
 
     const [student, alumni, matchResult] = await Promise.all([
-      prisma.studentProfile.findUnique({ where: { id: DEMO_STUDENT_ID } }),
+      prisma.studentProfile.findUnique({ where: { id: studentId } }),
       prisma.alumniProfile.findUnique({ where: { id: alumniId } }),
       prisma.matchResult.findUnique({
-        where: {
-          studentId_alumniId: { studentId: DEMO_STUDENT_ID, alumniId },
-        },
+        where: { studentId_alumniId: { studentId, alumniId } },
       }),
     ]);
 
@@ -36,7 +38,6 @@ export async function POST(request: Request) {
       scoreBreakdown
     );
 
-    // Cache the detailed rationale
     if (matchResult) {
       await prisma.matchResult.update({
         where: { id: matchResult.id },

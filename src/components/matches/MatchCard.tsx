@@ -17,19 +17,19 @@ export function MatchCard({ match }: MatchCardProps) {
 
   return (
     <Link href={`/mentor/${alumni.id}`}>
-      <Card className="group transition-shadow hover:shadow-md">
+      <Card className="group transition-all hover:shadow-card hover:-translate-y-0.5">
         <CardContent className="p-5">
           {/* Header: Avatar + Name + Score */}
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-sm font-semibold text-brand-700">
                 {getInitials(alumni.name)}
               </div>
               <div>
                 <h3 className="font-semibold text-neutral-900 group-hover:text-brand-600 transition-colors">
                   {alumni.name}
                 </h3>
-                <p className="text-sm text-neutral-600">{alumni.currentRole}</p>
+                <p className="text-sm text-neutral-500">{alumni.currentRole}</p>
               </div>
             </div>
             <span
@@ -43,7 +43,7 @@ export function MatchCard({ match }: MatchCardProps) {
           </div>
 
           {/* Company + School */}
-          <div className="mt-3 flex flex-wrap gap-3 text-sm text-neutral-600">
+          <div className="mt-3 flex flex-wrap gap-3 text-sm text-neutral-500">
             <span className="flex items-center gap-1">
               <Building2 className="h-3.5 w-3.5" />
               {alumni.currentCompany}
@@ -64,7 +64,7 @@ export function MatchCard({ match }: MatchCardProps) {
           )}
 
           {/* Rationale */}
-          <p className="mt-3 text-sm text-neutral-600 line-clamp-2">{rationale}</p>
+          <p className="mt-3 text-sm text-neutral-500 line-clamp-2">{rationale}</p>
 
           {/* Footer: Openness + CTA */}
           <div className="mt-3 flex items-center justify-between">

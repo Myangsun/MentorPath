@@ -1,20 +1,23 @@
 /**
  * POST /api/matches
- * Runs the matching engine for the demo student against all alumni.
- * Returns scored and sorted match results with AI rationale.
+ * Runs the matching engine for the current student against all alumni.
  */
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { calculateMatchScore } from '@/lib/matching';
 import { generateMatchRationale } from '@/lib/openai';
+import { getStudentId } from '@/lib/auth';
 import type { StudentProfile, AlumniProfile, Prisma } from '@prisma/client';
-
-import { DEMO_STUDENT_ID } from '@/lib/constants';
 
 export async function POST() {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const student = await prisma.studentProfile.findUnique({
-      where: { id: DEMO_STUDENT_ID },
+      where: { id: studentId },
     });
 
     if (!student) {
@@ -23,19 +26,15 @@ export async function POST() {
 
     const alumni = await prisma.alumniProfile.findMany();
 
-    // Score all alumni
     const scored = alumni.map((alum: AlumniProfile) => {
       const { score, breakdown } = calculateMatchScore(student as StudentProfile, alum);
       return { alumni: alum, score, breakdown };
     });
 
-    // Sort by score descending
     scored.sort((a, b) => b.score - a.score);
 
-    // Take top 20 for rationale generation
     const top = scored.slice(0, 20);
 
-    // Generate rationales in parallel for top matches
     const results = await Promise.all(
       top.map(async ({ alumni: alum, score, breakdown }) => {
         const rationale = await generateMatchRationale(
@@ -43,40 +42,22 @@ export async function POST() {
           alum,
           breakdown
         );
-        return {
-          alumniId: alum.id,
-          score,
-          breakdown,
-          rationale,
-          alumni: alum,
-        };
+        return { alumniId: alum.id, score, breakdown, rationale, alumni: alum };
       })
     );
 
-    // Upsert match results into database
     await Promise.all(
       results.map(({ alumniId, score, breakdown, rationale }) =>
         prisma.matchResult.upsert({
-          where: {
-            studentId_alumniId: { studentId: DEMO_STUDENT_ID, alumniId },
-          },
+          where: { studentId_alumniId: { studentId, alumniId } },
           update: { score, scoreBreakdown: breakdown as unknown as Prisma.JsonObject, rationale },
-          create: {
-            studentId: DEMO_STUDENT_ID,
-            alumniId,
-            score,
-            scoreBreakdown: breakdown as unknown as Prisma.JsonObject,
-            rationale,
-          },
+          create: { studentId, alumniId, score, scoreBreakdown: breakdown as unknown as Prisma.JsonObject, rationale },
         })
       )
     );
 
-    // Also include remaining alumni with lower scores (no rationale)
     const remaining = scored.slice(20).map(({ alumni: alum, score, breakdown }) => ({
-      alumniId: alum.id,
-      score,
-      breakdown,
+      alumniId: alum.id, score, breakdown,
       rationale: 'A potential mentor match for your career journey.',
       alumni: alum,
     }));

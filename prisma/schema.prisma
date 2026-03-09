@@ -11,6 +11,7 @@ datasource db {
 
 model StudentProfile {
   id                String       @id @default(cuid())
+  email             String?      @unique
   name              String
   school            String
   major             String

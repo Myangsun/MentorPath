@@ -20,9 +20,9 @@ export function formatScore(score: number): string {
 }
 
 export function getScoreColor(score: number): string {
-  if (score >= 80) return 'bg-success text-white';
-  if (score >= 60) return 'bg-brand-600 text-white';
-  return 'bg-neutral-400 text-white';
+  if (score >= 80) return 'bg-brand-50 text-brand-700';
+  if (score >= 60) return 'bg-accent-yellow-light text-yellow-700';
+  return 'bg-neutral-100 text-neutral-600';
 }
 
 export function getOpennessLabel(openness: OpennessLevel): {

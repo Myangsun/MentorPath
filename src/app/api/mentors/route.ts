@@ -1,17 +1,20 @@
 /**
  * GET /api/mentors
- * Returns cached match results for the demo student.
- * Use POST /api/matches to generate fresh matches first.
+ * Returns cached match results for the current student.
  */
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-
-import { DEMO_STUDENT_ID } from '@/lib/constants';
+import { getStudentId } from '@/lib/auth';
 
 export async function GET() {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const matches = await prisma.matchResult.findMany({
-      where: { studentId: DEMO_STUDENT_ID },
+      where: { studentId },
       include: { alumni: true },
       orderBy: { score: 'desc' },
     });

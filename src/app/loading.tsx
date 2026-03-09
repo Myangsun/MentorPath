@@ -1,16 +1,10 @@
-import { PageContainer } from '@/components/layout/PageContainer';
-import { Skeleton } from '@/components/ui/skeleton';
-
 export default function Loading() {
   return (
-    <PageContainer>
-      <Skeleton className="mb-4 h-8 w-48" />
-      <Skeleton className="mb-2 h-4 w-64" />
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-48 w-full rounded-lg" />
-        ))}
+    <div className="flex min-h-screen items-center justify-center bg-cream-100">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600" />
+        <p className="text-neutral-500 text-sm">Loading...</p>
       </div>
-    </PageContainer>
+    </div>
   );
 }

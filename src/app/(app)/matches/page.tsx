@@ -7,7 +7,7 @@ import { FilterPanel } from '@/components/matches/FilterPanel';
 import { SortDropdown } from '@/components/matches/SortDropdown';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { RefreshCw } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import type { MatchResultWithAlumni, MatchFilters, SortOption } from '@/types';
 
 const defaultFilters: MatchFilters = {
@@ -24,7 +24,6 @@ export default function MatchesPage() {
   const [filters, setFilters] = useState<MatchFilters>(defaultFilters);
   const [sort, setSort] = useState<SortOption>('score_desc');
 
-  // Fetch cached matches
   const fetchMatches = useCallback(async () => {
     try {
       const res = await fetch('/api/mentors');
@@ -35,7 +34,6 @@ export default function MatchesPage() {
     }
   }, []);
 
-  // Generate fresh matches
   const generateMatches = useCallback(async () => {
     setGenerating(true);
     try {
@@ -53,10 +51,10 @@ export default function MatchesPage() {
 
   return (
     <PageContainer>
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Discover Mentors</h1>
-          <p className="mt-1 text-neutral-600">
+          <h1 className="heading-display text-3xl text-neutral-900">Discover Mentors</h1>
+          <p className="mt-2 text-neutral-500">
             {matches.length > 0
               ? `${matches.length} mentors matched to your profile`
               : 'Generate matches to find your ideal mentors'}
@@ -67,9 +65,9 @@ export default function MatchesPage() {
           <Button
             onClick={generateMatches}
             disabled={generating}
-            className="bg-brand-600 hover:bg-brand-700"
+            variant="brand"
           >
-            <RefreshCw className={`mr-2 h-4 w-4 ${generating ? 'animate-spin' : ''}`} />
+            <Sparkles className={`mr-2 h-4 w-4 ${generating ? 'animate-pulse' : ''}`} />
             {generating ? 'Generating...' : 'Generate Matches'}
           </Button>
         </div>
@@ -78,8 +76,8 @@ export default function MatchesPage() {
       <div className="flex gap-6">
         {/* Sidebar filters (desktop) */}
         <div className="hidden w-[280px] shrink-0 lg:block">
-          <div className="rounded-lg border border-border bg-white">
-            <div className="border-b p-4">
+          <div className="rounded-2xl border border-border bg-white shadow-soft">
+            <div className="border-b border-border p-5">
               <h2 className="font-semibold text-neutral-900">Filters</h2>
             </div>
             <FilterPanel filters={filters} onFilterChange={setFilters} />
@@ -91,7 +89,7 @@ export default function MatchesPage() {
           {loading ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full rounded-lg" />
+                <Skeleton key={i} className="h-48 w-full rounded-2xl" />
               ))}
             </div>
           ) : (

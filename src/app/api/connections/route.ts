@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
-import { DEMO_STUDENT_ID } from '@/lib/constants';
+import { getStudentId } from '@/lib/auth';
 import type { ConnectionStatus } from '@/types';
 
 const VALID_STATUSES: ConnectionStatus[] = ['saved', 'outreach_sent', 'replied', 'met', 'ongoing'];
 
 export async function GET() {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const connections = await prisma.connection.findMany({
-      where: { studentId: DEMO_STUDENT_ID },
+      where: { studentId },
       include: { alumni: true },
       orderBy: { lastActivityAt: 'desc' },
     });
@@ -21,6 +26,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const { alumniId, status, outreachMessage } = await request.json();
 
     if (!alumniId) {
@@ -32,15 +42,8 @@ export async function POST(request: Request) {
     }
 
     const connection = await prisma.connection.upsert({
-      where: {
-        studentId_alumniId: { studentId: DEMO_STUDENT_ID, alumniId },
-      },
-      create: {
-        studentId: DEMO_STUDENT_ID,
-        alumniId,
-        status: status || 'saved',
-        outreachMessage: outreachMessage ?? null,
-      },
+      where: { studentId_alumniId: { studentId, alumniId } },
+      create: { studentId, alumniId, status: status || 'saved', outreachMessage: outreachMessage ?? null },
       update: {
         ...(status !== undefined && { status }),
         ...(outreachMessage !== undefined && { outreachMessage }),
@@ -57,6 +60,11 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    const studentId = await getStudentId();
+    if (!studentId) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+
     const { alumniId, status, notes } = await request.json();
 
     if (!alumniId) {
@@ -68,9 +76,7 @@ export async function PATCH(request: Request) {
     }
 
     const connection = await prisma.connection.update({
-      where: {
-        studentId_alumniId: { studentId: DEMO_STUDENT_ID, alumniId },
-      },
+      where: { studentId_alumniId: { studentId, alumniId } },
       data: {
         ...(status !== undefined && { status }),
         ...(notes !== undefined && { notes }),
