@@ -11,6 +11,10 @@ import { Plus, Trash2, Save, Loader2 } from 'lucide-react';
 import type { StudentProfileFormData } from '@/lib/validation';
 import type { PriorRole } from '@/types';
 
+interface FieldErrors {
+  [key: string]: string[] | undefined;
+}
+
 interface ProfileFormProps {
   initialData?: StudentProfileFormData;
   onSave: (data: StudentProfileFormData) => Promise<void>;
@@ -71,6 +75,8 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const updateField = useCallback(<K extends keyof StudentProfileFormData>(
     key: K,
@@ -117,9 +123,25 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setError(null);
+    setFieldErrors({});
     try {
       await onSave(formData);
       setSaved(true);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save profile';
+      // Try to parse structured field errors from the message
+      try {
+        const parsed = JSON.parse(msg);
+        if (parsed.fieldErrors) {
+          setFieldErrors(parsed.fieldErrors);
+          setError('Please fix the highlighted fields below.');
+        } else {
+          setError(msg);
+        }
+      } catch {
+        setError(msg);
+      }
     } finally {
       setSaving(false);
     }
@@ -127,9 +149,21 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
 
   const completion = calculateCompletion(formData);
 
+  const fieldError = (field: string) => {
+    const errs = fieldErrors[field];
+    if (!errs?.length) return null;
+    return <p className="mt-1 text-xs text-red-600">{errs[0]}</p>;
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <CompletionBar completion={completion} />
+
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* Basic Info */}
       <Card>
@@ -145,7 +179,9 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                 value={formData.name || ''}
                 onChange={(e) => updateField('name', e.target.value)}
                 placeholder="Your full name"
+                className={fieldErrors.name ? 'border-red-400' : ''}
               />
+              {fieldError('name')}
             </div>
             <div className="space-y-2">
               <Label htmlFor="graduationYear">Graduation Year</Label>
@@ -156,7 +192,9 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                 onChange={(e) => updateField('graduationYear', parseInt(e.target.value) || undefined)}
                 min={2000}
                 max={2030}
+                className={fieldErrors.graduationYear ? 'border-red-400' : ''}
               />
+              {fieldError('graduationYear')}
             </div>
           </div>
 
@@ -165,7 +203,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
               <Label htmlFor="school">School</Label>
               <select
                 id="school"
-                className="flex h-10 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                className={`flex h-10 w-full rounded-xl border bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200 ${fieldErrors.school ? 'border-red-400' : 'border-neutral-200'}`}
                 value={formData.school || ''}
                 onChange={(e) => updateField('school', e.target.value)}
               >
@@ -174,12 +212,13 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+              {fieldError('school')}
             </div>
             <div className="space-y-2">
               <Label htmlFor="major">Major</Label>
               <select
                 id="major"
-                className="flex h-10 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                className={`flex h-10 w-full rounded-xl border bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200 ${fieldErrors.major ? 'border-red-400' : 'border-neutral-200'}`}
                 value={formData.major || ''}
                 onChange={(e) => updateField('major', e.target.value)}
               >
@@ -188,6 +227,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                   <option key={m} value={m}>{m}</option>
                 ))}
               </select>
+              {fieldError('major')}
             </div>
           </div>
 
@@ -195,7 +235,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
             <Label htmlFor="visaStatus">Visa Status</Label>
             <select
               id="visaStatus"
-              className="flex h-10 w-full rounded-md border border-neutral-400 bg-white px-3 py-2 text-sm"
+              className={`flex h-10 w-full rounded-xl border bg-white px-4 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-200 ${fieldErrors.visaStatus ? 'border-red-400' : 'border-neutral-200'}`}
               value={formData.visaStatus || ''}
               onChange={(e) => updateField('visaStatus', e.target.value || null)}
             >
@@ -204,6 +244,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
                 <option key={v} value={v}>{v}</option>
               ))}
             </select>
+            {fieldError('visaStatus')}
           </div>
         </CardContent>
       </Card>
@@ -282,6 +323,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label>Target Industries</Label>
+            {fieldError('industries')}
             <div className="flex flex-wrap gap-2">
               {INDUSTRY_OPTIONS.map((ind) => (
                 <button
@@ -302,6 +344,7 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
 
           <div className="space-y-2">
             <Label>Target Roles</Label>
+            {fieldError('roleInterests')}
             <div className="flex flex-wrap gap-2">
               {ROLE_OPTIONS.map((role) => (
                 <button
@@ -375,7 +418,8 @@ export function ProfileForm({ initialData, onSave }: ProfileFormProps) {
             </>
           )}
         </Button>
-        {saved && <span className="text-sm text-success">Profile saved successfully!</span>}
+        {saved && <span className="text-sm text-brand-600">Profile saved successfully!</span>}
+        {error && !saved && <span className="text-sm text-red-600">{error}</span>}
       </div>
     </form>
   );

@@ -26,7 +26,14 @@ export default function ProfilePage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('Failed to save');
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      if (body?.details?.fieldErrors) {
+        // Pass structured field errors as JSON string for ProfileForm to parse
+        throw new Error(JSON.stringify({ fieldErrors: body.details.fieldErrors }));
+      }
+      throw new Error(body?.error || 'Failed to save profile');
+    }
     const updated = await res.json();
     setProfile(updated);
   };
